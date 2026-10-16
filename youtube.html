@@ -178,6 +178,8 @@ a{color:#8ab4f8}
    const typing=active&&(active.tagName==='INPUT'||active.tagName==='TEXTAREA');
    if(typing&&e.key==='Enter'&&active===searchInput){e.preventDefault();search(searchInput.value);return;}
    if(typing&&e.key==='Enter'&&active===videoInput){e.preventDefault();watch(videoInput.value);return;}
+   // Preserve normal text editing (especially Backspace and caret arrows) while typing.
+   if(typing)return;
    if(e.key==='ArrowDown'||e.key==='ArrowUp'){
      if(typing&&!['ArrowUp','ArrowDown'].includes(e.key))return;
      e.preventDefault();focusIndex+=(e.key==='ArrowDown'?1:-1);updateFocus();return;
