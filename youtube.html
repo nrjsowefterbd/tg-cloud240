@@ -82,6 +82,12 @@ a{color:#8ab4f8}
       <button class="btn primary" type="submit">▶ Watch video</button>
     </form>
     <div id="results" aria-live="polite"></div>
+    <details id="search-settings">
+      <summary class="btn">⚙ Optional in-app search setup</summary>
+      <p class="smallprint">To show real results inside this app, add your own YouTube Data API v3 key. Restrict the key to this site's HTTP referrer and the YouTube Data API in Google Cloud. Without a key, Search opens real YouTube results in the browser.</p>
+      <input id="api-key" type="text" maxlength="250" placeholder="YouTube Data API key" autocomplete="off" spellcheck="false">
+      <button class="btn" id="save-api-key" type="button">Save key on this device</button>
+    </details>
     <hr>
     <button class="btn" id="recent" type="button">↻ Repeat last search</button>
     <button class="btn" id="keyhelp" type="button">⌨ Key / pointer help</button>
@@ -105,6 +111,8 @@ a{color:#8ab4f8}
  const videoInput=document.getElementById('video-url');
  const status=document.getElementById('status');
  const results=document.getElementById('results');
+ const apiKeyInput=document.getElementById('api-key');
+ let apiKey=localStorage.getItem('yt240:apiKey')||'';
  const frame=document.getElementById('player-frame');
  const playerTools=document.getElementById('player-tools');
  const cursor=document.getElementById('cursor');
@@ -113,7 +121,7 @@ a{color:#8ab4f8}
  let focusIndex=0;
  let cursorFrame=0, targetX=-100, targetY=-100, pointerX=-100, pointerY=-100, mouseSeen=false, idleTimer=0;
  const OPEN_YOUTUBE='https://m.youtube.com/';
- const visibleFocusables=()=>Array.from(main.querySelectorAll('button:not([disabled]),input:not([disabled]),.result')).filter(el=>el.offsetParent!==null);
+ const visibleFocusables=()=>Array.from(main.querySelectorAll('button:not([disabled]),input:not([disabled]),summary.btn,.result')).filter(el=>el.offsetParent!==null);
  function setStatus(t){status.textContent=t;}
  function findVideoId(input){
    const s=String(input||'').trim();
@@ -131,18 +139,50 @@ a{color:#8ab4f8}
    return '';
  }
  function youtubeSearchUrl(q){return 'https://m.youtube.com/results?search_query='+encodeURIComponent(q);}
- function search(q){
+ async function search(q){
    q=String(q||'').trim();
    if(!q){setStatus('Type a search first.');searchInput.focus();return;}
    lastSearch=q; localStorage.setItem('yt240:lastSearch',q);
-   // YouTube search pages cannot be embedded by third-party sites. Navigate to the real search.
-   window.location.href=youtubeSearchUrl(q);
+   if(!apiKey){window.location.href=youtubeSearchUrl(q);return;}
+   setStatus('Searching YouTube…');results.replaceChildren();
+   try{
+     const url='https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=8&q='+encodeURIComponent(q)+'&key='+encodeURIComponent(apiKey);
+     const response=await fetch(url);
+     const data=await response.json();
+     if(!response.ok||data.error)throw new Error(data.error?.message||('HTTP '+response.status));
+     const videos=(data.items||[]).filter(v=>v.id&&v.id.videoId&&v.snippet);
+     if(!videos.length){setStatus('No videos found. Try another search.');return;}
+     videos.forEach(video=>{
+       const card=document.createElement('button');
+       card.type='button';card.className='result focusable';card.dataset.id=video.id.videoId;
+       const image=document.createElement('img');image.alt='';image.loading='lazy';
+       image.src=video.snippet.thumbnails?.medium?.url||video.snippet.thumbnails?.default?.url||'';
+       const info=document.createElement('span');
+       const title=document.createElement('span');title.className='rtitle';title.textContent=video.snippet.title||'YouTube video';
+       const meta=document.createElement('span');meta.className='rmeta';meta.textContent=video.snippet.channelTitle||'YouTube';
+       info.append(title,meta);card.append(image,info);
+       card.addEventListener('click',()=>watch(video.id.videoId));
+       results.append(card);
+     });
+     setStatus('Real YouTube results. Select a result to play it here.');
+     const focusables=visibleFocusables();
+     const firstResult=focusables.findIndex(el=>el.classList.contains('result'));
+     if(firstResult>=0)focusIndex=firstResult;
+     updateFocus();
+   }catch(err){
+     setStatus('In-app search failed: '+String(err.message||err).slice(0,150)+'. Check the API key/referrer restriction, or use Open YouTube.');
+   }
+ }
+ function searchExternal(q){
+   q=String(q||'').trim();
+   window.location.href=q?youtubeSearchUrl(q):OPEN_YOUTUBE;
  }
  function watch(input){
    const id=findVideoId(input);
    if(!id){setStatus('That does not look like a YouTube video link or 11-character video ID.');videoInput.focus();return;}
    currentVideo=id;
    app.classList.add('player-open');
+   cursor.style.opacity='0';
    playerTools.hidden=false;
    document.getElementById('player-tools').style.display='flex';
    frame.src='https://www.youtube.com/embed/'+encodeURIComponent(id)+'?playsinline=1&controls=1&rel=0&enablejsapi=1&origin='+encodeURIComponent(location.origin);
@@ -152,15 +192,22 @@ a{color:#8ab4f8}
  function home(){
    frame.src='about:blank';
    app.classList.remove('player-open');
+   if(mouseSeen)cursor.style.opacity='1';
    playerTools.hidden=true;
    document.getElementById('player-tools').style.display='none';
    try{history.replaceState(null,'',location.pathname+location.search);}catch(e){}
    focusIndex=0;updateFocus();
  }
  document.getElementById('search-form').addEventListener('submit',e=>{e.preventDefault();search(searchInput.value);});
- document.getElementById('site-search').addEventListener('click',()=>search(searchInput.value));
+ document.getElementById('site-search').addEventListener('click',()=>searchExternal(searchInput.value));
  document.getElementById('watch-form').addEventListener('submit',e=>{e.preventDefault();watch(videoInput.value);});
  document.getElementById('recent').addEventListener('click',()=>{if(lastSearch){search(lastSearch)}else{setStatus('No previous search saved yet.');searchInput.focus();}});
+ apiKeyInput.value=apiKey;
+ document.getElementById('save-api-key').addEventListener('click',()=>{
+   apiKey=apiKeyInput.value.trim();
+   if(apiKey)localStorage.setItem('yt240:apiKey',apiKey);else localStorage.removeItem('yt240:apiKey');
+   setStatus(apiKey?'API key saved only on this device. In-app search is enabled.':'API key cleared. Search will open YouTube directly.');
+ });
  document.getElementById('keyhelp').addEventListener('click',()=>setStatus('Keys: Up/Down move • Left/Right scroll focus groups • Enter/OK select • 1 Search • 2 Watch link • Back/Esc returns. A mouse cursor is shown when the browser supports a fine pointer.'));
  document.getElementById('back-home').addEventListener('click',home);
  document.getElementById('open-on-youtube').addEventListener('click',()=>{if(currentVideo)window.location.href='https://m.youtube.com/watch?v='+encodeURIComponent(currentVideo);});
