@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#101b35">
+<meta name="description" content="Naim Browser start page for CloudMosa feature phones, with Google apps and keyboard navigation.">
+<title>Naim Browser — Cloud 240</title>
+<style>
+:root{color-scheme:dark;--bg:#10182d;--panel:#192541;--line:#354463;--text:#f4f7ff;--muted:#aab6d0;--blue:#8cb7ff;--cyan:#9be7e0}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;min-width:200px;background:#0b1020;color:var(--text);font:13px/1.35 Arial,Helvetica,sans-serif;overflow:hidden}button,input{font:inherit}button{cursor:pointer;touch-action:manipulation}
+#app{width:240px;height:320px;max-width:100vw;max-height:100dvh;margin:auto;display:flex;flex-direction:column;overflow:hidden;position:relative;background:linear-gradient(155deg,#1b2d52 0%,#10182d 52%,#142b3d 100%);border:1px solid #30415f}
+header{height:35px;flex:none;display:flex;align-items:center;padding:0 8px;gap:7px;border-bottom:1px solid #354463;background:#172440}.logo{width:22px;height:22px;border-radius:7px;background:linear-gradient(140deg,#9be7e0,#8cb7ff);color:#10203b;display:grid;place-items:center;font-size:14px;font-weight:900}.brand{font-size:14px;font-weight:800;letter-spacing:.2px}.tag{margin-left:auto;font-size:8px;color:#b8c7e3}
+#searchbox{padding:8px 7px 7px;flex:none;border-bottom:1px solid #30415f}#searchform{display:flex;gap:4px}#address{width:100%;min-width:0;flex:1;background:#f3f6ff;color:#1b2944;border:1px solid #b8c8e8;border-radius:7px;padding:8px 7px;font-size:11px;outline:none}#go{flex:none;border:1px solid #a6d8f4;border-radius:7px;padding:0 9px;background:#9be7e0;color:#10233c;font-size:11px;font-weight:bold}#hint{font-size:9px;color:#bdc9e2;margin:5px 1px 0}
+#main{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;padding:8px 7px 6px;scrollbar-width:thin;scrollbar-color:#526b94 transparent}#main::-webkit-scrollbar{width:3px}#main::-webkit-scrollbar-thumb{background:#526b94;border-radius:3px}.welcome{margin:0 0 2px;font-size:16px;font-weight:800;letter-spacing:-.3px}.sub{font-size:9px;color:var(--muted);margin:0 0 8px}
+.section{font-size:9px;font-weight:bold;letter-spacing:.8px;text-transform:uppercase;color:#b8c8e8;margin:8px 2px 5px}.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px 4px}.app-link{min-width:0;min-height:52px;border:1px solid #344866;border-radius:8px;background:rgba(31,47,78,.85);color:white;text-decoration:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:5px 1px;font-size:9px;text-align:center}.app-link:focus-visible,.app-link.selected,.app-link:hover{outline:2px solid #d4f7f1;outline-offset:-2px;background:#2d4168}.app-icon{height:25px;width:25px;border-radius:8px;display:grid;place-items:center;font-size:14px;font-weight:800;color:#12213a;background:#dce9ff}.g-search{background:#e4edff}.g-gmail{background:#ffe0df}.g-youtube{background:#ffbcbc}.g-maps{background:#c6f0da}.g-drive{background:#fff0bd}.g-translate{background:#c8e5ff}.g-photos{background:#f4d6ff}.g-calendar{background:#d4e5ff}.g-news{background:#e4e9f2}.g-meet{background:#c9f0e4}.g-play{background:#ffe1ba}.g-gemini{background:#d8d7ff}.g-docs{background:#cde5ff}.g-sheets{background:#c9f1d2}.g-keep{background:#fff1b8}.g-maps{background:#c6f0da}
+#quick{display:flex;gap:5px;margin-top:8px}#quick button{flex:1;min-width:0;padding:7px 2px;border:1px solid #3a5076;border-radius:6px;background:#1d2d4d;color:#eaf2ff;font-size:9px}
+footer{height:21px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 6px;background:#0c1325;border-top:1px solid #30415f;color:#aebdd8;font-size:9px}footer button{border:0;background:transparent;color:#eef4ff;font-size:9px;padding:3px}
+#status{display:none;margin-top:6px;padding:6px;background:#14233d;border:1px solid #405b85;border-radius:5px;font-size:9px;color:#dce8ff;overflow-wrap:anywhere}
+#cursor{position:fixed;left:0;top:0;width:13px;height:13px;border:2px solid #fff;border-radius:50%;box-shadow:0 0 0 2px #72cfc8,0 1px 5px #000;pointer-events:none;z-index:99999;opacity:0;transform:translate3d(-100px,-100px,0);will-change:transform}
+@media(max-height:340px){#app{height:100dvh;border:0}header{height:29px}#main{padding-top:5px}.app-link{min-height:45px}footer{height:18px}}
+@media(hover:hover) and (pointer:fine){#cursor{opacity:1}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div id="cursor" aria-hidden="true"></div>
+<main id="app">
+<header><span class="logo">N</span><span class="brand">Naim Browser</span><span class="tag">CLOUD 240</span></header>
+<section id="searchbox">
+<form id="searchform"><input id="address" type="text" maxlength="500" placeholder="Search Google or enter URL" autocomplete="off" aria-label="Search Google or enter website address"><button id="go" type="submit">GO</button></form>
+<div id="hint">Google search • quick links • keyboard friendly</div>
+</section>
+<section id="main">
+<p class="welcome">Hello, welcome back.</p><p class="sub">Your small-screen internet home.</p>
+<div class="section">Google apps</div>
+<div class="grid" id="apps">
+<a class="app-link" href="https://www.google.com/" data-name="Google Search"><span class="app-icon g-search">G</span><span>Search</span></a>
+<a class="app-link" href="https://mail.google.com/" data-name="Gmail"><span class="app-icon g-gmail">M</span><span>Gmail</span></a>
+<a class="app-link" href="https://www.youtube.com/" data-name="YouTube"><span class="app-icon g-youtube">▶</span><span>YouTube</span></a>
+<a class="app-link" href="https://maps.google.com/" data-name="Google Maps"><span class="app-icon g-maps">⌖</span><span>Maps</span></a>
+<a class="app-link" href="https://drive.google.com/" data-name="Google Drive"><span class="app-icon g-drive">▲</span><span>Drive</span></a>
+<a class="app-link" href="https://translate.google.com/" data-name="Google Translate"><span class="app-icon g-translate">文</span><span>Translate</span></a>
+<a class="app-link" href="https://photos.google.com/" data-name="Google Photos"><span class="app-icon g-photos">✿</span><span>Photos</span></a>
+<a class="app-link" href="https://calendar.google.com/" data-name="Google Calendar"><span class="app-icon g-calendar">31</span><span>Calendar</span></a>
+<a class="app-link" href="https://news.google.com/" data-name="Google News"><span class="app-icon g-news">▤</span><span>News</span></a>
+<a class="app-link" href="https://meet.google.com/" data-name="Google Meet"><span class="app-icon g-meet">▣</span><span>Meet</span></a>
+<a class="app-link" href="https://play.google.com/" data-name="Google Play"><span class="app-icon g-play">▷</span><span>Play</span></a>
+<a class="app-link" href="https://gemini.google.com/" data-name="Google Gemini"><span class="app-icon g-gemini">✦</span><span>Gemini</span></a>
+<a class="app-link" href="https://docs.google.com/" data-name="Google Docs"><span class="app-icon g-docs">▤</span><span>Docs</span></a>
+<a class="app-link" href="https://sheets.google.com/" data-name="Google Sheets"><span class="app-icon g-sheets">▦</span><span>Sheets</span></a>
+<a class="app-link" href="https://keep.google.com/" data-name="Google Keep"><span class="app-icon g-keep">▣</span><span>Keep</span></a>
+<a class="app-link" href="https://contacts.google.com/" data-name="Google Contacts"><span class="app-icon g-search">♙</span><span>Contacts</span></a>
+</div>
+<div class="section">Popular sites</div>
+<div class="grid">
+<a class="app-link" href="https://www.ebanglalibrary.com/" data-name="eBanglaLibrary"><span class="app-icon g-drive">বই</span><span>Bangla Books</span></a>
+<a class="app-link" href="https://www.wikipedia.org/" data-name="Wikipedia"><span class="app-icon g-docs">W</span><span>Wikipedia</span></a>
+<a class="app-link" href="https://www.facebook.com/" data-name="Facebook"><span class="app-icon g-translate">f</span><span>Facebook</span></a>
+<a class="app-link" href="https://www.bbc.com/bengali" data-name="BBC Bangla"><span class="app-icon g-news">BBC</span><span>BBC Bangla</span></a>
+</div>
+<div id="status" role="status" aria-live="polite"></div>
+<div id="quick"><button id="clear" type="button">Clear search</button><button id="topbtn" type="button">↑ Top</button><button id="help" type="button">Help</button></div>
+</section>
+<footer><span>* Menu</span><span>↑↓ Navigate · OK Open</span><button id="back" type="button">Back</button></footer>
+</main>
+<script>
+(function(){
+'use strict';
+const $=id=>document.getElementById(id),input=$('address'),main=$('main'),status=$('status'),cursor=$('cursor');let focusIndex=0;
+function goTo(raw){let s=String(raw||'').trim();if(!s){input.focus();return;}let url;if(/^https?:\/\//i.test(s)){url=s;}else if(/^[\w-]+\.[a-z]{2,}(\/.*)?$/i.test(s)&&!s.includes(' ')){url='https://'+s;}else{url='https://www.google.com/search?q='+encodeURIComponent(s);}location.href=url;}
+$('searchform').addEventListener('submit',e=>{e.preventDefault();goTo(input.value);});
+document.querySelectorAll('a.app-link').forEach(a=>a.addEventListener('click',()=>{try{sessionStorage.setItem('naim:lastApp',a.dataset.name||a.textContent.trim());}catch(e){}}));
+$('clear').addEventListener('click',()=>{input.value='';input.focus();});
+$('topbtn').addEventListener('click',()=>main.scrollTo({top:0,behavior:'auto'}));
+$('help').addEventListener('click',()=>{status.style.display='block';status.textContent='Type a search or website address and press GO. Use arrow keys to move focus, Enter/OK to open, and Back to return to the start page. Some websites may not support the phone browser.';});
+$('back').addEventListener('click',()=>{if(history.length>1)history.back();else{input.focus();main.scrollTo({top:0,behavior:'auto'});}});
+function focusables(){return Array.from(main.querySelectorAll('a.app-link,button')).filter(el=>el.offsetParent!==null);}
+function updateFocus(){const a=focusables();if(!a.length)return;focusIndex=(focusIndex+a.length)%a.length;a.forEach((el,i)=>el.classList.toggle('selected',i===focusIndex));if(a[focusIndex].classList.contains('app-link'))a[focusIndex].scrollIntoView({block:'nearest',behavior:'auto'});}
+window.addEventListener('keydown',e=>{const el=document.activeElement,typing=el&&(el.tagName==='INPUT'||el.tagName==='TEXTAREA');if(typing&&e.key==='Enter'){e.preventDefault();if(el.id==='address')goTo(el.value);return;}if(typing)return;if(['ArrowDown','ArrowRight'].includes(e.key)){e.preventDefault();focusIndex++;updateFocus();return;}if(['ArrowUp','ArrowLeft'].includes(e.key)){e.preventDefault();focusIndex--;updateFocus();return;}if(e.key==='Enter'||e.key===' '){e.preventDefault();const a=focusables();if(a[focusIndex])a[focusIndex].click();return;}if(['Escape','Backspace','SoftRight','F2'].includes(e.key)){if(history.length>1){e.preventDefault();history.back();}else{input.focus();}return;}if(['SoftLeft','F1'].includes(e.key)){e.preventDefault();main.scrollTo({top:0,behavior:'auto'});input.focus();}});
+let tx=-100,ty=-100,px=-100,py=-100,raf=0,idle;
+document.addEventListener('mousemove',e=>{tx=e.clientX;ty=e.clientY;cursor.style.opacity='1';if(!raf)raf=requestAnimationFrame(moveCursor);clearTimeout(idle);idle=setTimeout(()=>{cursor.style.opacity='0';},2200);},{passive:true});
+function moveCursor(){px+=(tx-px)*.52;py+=(ty-py)*.52;cursor.style.transform='translate3d('+Math.round(px-6)+'px,'+Math.round(py-6)+'px,0)';if(Math.abs(tx-px)>.4||Math.abs(ty-py)>.4)raf=requestAnimationFrame(moveCursor);else raf=0;}
+document.addEventListener('mousedown',()=>cursor.style.background='rgba(155,231,224,.4)',{passive:true});document.addEventListener('mouseup',()=>cursor.style.background='transparent',{passive:true});
+try{const last=sessionStorage.getItem('naim:lastApp');if(last){status.style.display='block';status.textContent='Last opened: '+last;}}catch(e){}
+updateFocus();
+})();
+</script>
+</body>
+</html>
