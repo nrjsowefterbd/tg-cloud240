@@ -31,6 +31,7 @@
       <div id="status">This launcher navigates to the official Telegram website. It never asks for your login code or password.</div>
       <button class="btn" id="open" autofocus>▶ Open real Telegram Web K</button>
       <button class="btn" id="compact">Open Telegram Web Z</button>
+      <button class="btn" id="youtube">▶ Open YouTube Cloud 240</button>
       <button class="btn" id="help">Keypad help</button>
       <p class="hint">Choose a client version. Sign in only on the official web.telegram.org domain.</p>
     </section>
@@ -44,7 +45,8 @@
  function openUrl(url){window.location.href=url;}
  items[0].onclick=()=>openUrl('https://web.telegram.org/k/');
  items[1].onclick=()=>openUrl('https://web.telegram.org/a/');
- items[2].onclick=()=>document.getElementById('status').textContent='Use Up/Down to select; Enter or OK to open; 1 opens Web K; 2 opens Web Z. Login takes place on official Telegram.';
+ items[2].onclick=()=>openUrl(new URL('youtube.html',location.href).href);
+ items[3].onclick=()=>document.getElementById('status').textContent='Use Up/Down to select; Enter or OK to open; 1 opens Web K; 2 opens Web Z; 3 opens YouTube Cloud 240. Sign in only on official service domains.';
  document.getElementById('ok').onclick=()=>items[index].click();
  document.getElementById('left').onclick=()=>{document.getElementById('status').textContent='Keypad: Up/Down move · Enter/OK select · 1 Web K · 2 Web Z · Back returns';};
  document.getElementById('back').onclick=()=>{try{history.back()}catch(e){}};
@@ -55,6 +57,7 @@
    else if(e.key==='Enter'||e.key===' '){e.preventDefault();items[index].click()}
    else if(e.key==='1'){e.preventDefault();items[0].click()}
    else if(e.key==='2'){e.preventDefault();items[1].click()}
+   else if(e.key==='3'){e.preventDefault();items[2].click()}
    else if(['Escape','Backspace','SoftRight','F2'].includes(e.key)){e.preventDefault();try{history.back()}catch(e){}}
    else if(['SoftLeft','F1'].includes(e.key)){e.preventDefault();document.getElementById('left').click()}
   }
