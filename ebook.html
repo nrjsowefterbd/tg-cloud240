@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#173f32">
+<meta name="description" content="A lightweight Bengali ebook reader launcher for CloudMosa CloudPhone.">
+<title>বাংলা বই — Cloud 240</title>
+<style>
+:root{color-scheme:dark;--bg:#101a16;--panel:#183d30;--green:#287653;--paper:#f4f0e5;--text:#f7f7ef;--muted:#bdc9c0;--line:#315546}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;min-width:200px;background:#09110d;color:var(--text);font:13px/1.35 Arial,"Noto Sans Bengali",sans-serif;overflow:hidden}button,input{font:inherit}button{cursor:pointer;touch-action:manipulation}
+#app{width:240px;height:320px;max-width:100vw;max-height:100dvh;margin:auto;background:var(--bg);display:flex;flex-direction:column;overflow:hidden;position:relative;border:1px solid #284638}
+#top{height:31px;flex:none;background:var(--panel);display:flex;align-items:center;gap:6px;padding:0 7px;border-bottom:1px solid var(--line)}.mark{width:20px;height:22px;display:flex;align-items:center;justify-content:center;background:#f0dfb1;color:#173f32;border-radius:3px;font-weight:900;font-size:13px}.brand{font-weight:800;font-size:13px;white-space:nowrap}#device{margin-left:auto;font-size:9px;color:var(--muted)}
+#nav{display:flex;gap:4px;padding:5px;background:#101b15;border-bottom:1px solid var(--line);flex:none}#nav button{flex:1;min-width:0;padding:6px 1px;font-size:10px;font-weight:bold;background:#22352b;color:#f4f5ed;border:1px solid #3b5747;border-radius:4px}#nav button.active{background:var(--green);border-color:#72b28c}
+#home{flex:1;min-height:0;overflow:auto;padding:9px;background:radial-gradient(ellipse at top,#244b38,#101a16 75%)}.welcome{font-size:17px;line-height:1.35;font-weight:800;margin:3px 0 6px}.sub{font-size:10px;line-height:1.5;color:var(--muted);margin:0 0 10px}.tile{display:block;width:100%;text-align:left;padding:9px;margin:6px 0;border:1px solid #385845;border-radius:5px;background:#1a3024;color:#f5f6ee;font-weight:bold;font-size:12px}.tile span{display:block;color:#bfcfc1;font-weight:normal;font-size:10px;margin-top:3px}.tile.primary{background:#d9e9d8;color:#183b2b;border-color:#d9e9d8}.tile.primary span{color:#365a45}
+#searchpanel{display:none;padding:8px;background:#111d16;border-bottom:1px solid var(--line);flex:none}label{font-size:10px;color:#dbe6dc;display:block;margin-bottom:4px}input{width:100%;min-width:0;padding:8px;background:#09110d;color:white;border:1px solid #54705d;border-radius:4px;font-size:12px;outline:none}input:focus{border-color:#d9e9d8}.searchrow{display:flex;gap:4px;margin-top:5px}.searchrow button{flex:1;padding:7px 2px;border-radius:4px;border:1px solid #42614d;background:#254b36;color:white;font-size:10px;font-weight:bold}
+#reader{display:none;flex:1;min-height:0;background:var(--paper);position:relative}#site{width:100%;height:100%;border:0;display:block;background:white}#tools{height:29px;display:flex;gap:4px;align-items:center;justify-content:space-around;padding:3px;background:#14251b;border-top:1px solid var(--line);flex:none}#tools button{flex:1;min-width:0;padding:6px 1px;font-size:9px;background:#223e2c;color:white;border:1px solid #42634b;border-radius:3px}#foot{height:20px;flex:none;background:#08100b;border-top:1px solid #2b4434;display:flex;align-items:center;justify-content:space-between;padding:0 5px;color:#b5c3b8;font-size:9px}#foot button{background:transparent;border:0;color:#e7eee6;padding:3px;font-size:9px}
+#notice{position:absolute;left:7px;right:7px;bottom:29px;background:#14251b;border:1px solid #56705d;border-radius:4px;padding:7px;font-size:10px;line-height:1.4;box-shadow:0 2px 8px #0008;display:none;z-index:4}#notice button{display:block;width:100%;margin-top:5px;padding:6px;background:#d9e9d8;border:0;border-radius:3px;color:#173b2a;font-weight:bold;font-size:10px}
+#cursor{position:fixed;left:0;top:0;width:13px;height:13px;border:2px solid #fff;border-radius:50%;box-shadow:0 0 0 2px #287653,0 1px 5px #000;pointer-events:none;z-index:99999;opacity:0;transform:translate3d(-100px,-100px,0);will-change:transform}
+@media(max-height:340px){#app{height:100dvh;border:0}#top{height:27px}#foot{height:18px}}@media(hover:hover) and (pointer:fine){#cursor{opacity:1}}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div id="cursor" aria-hidden="true"></div>
+<main id="app">
+<header id="top"><span class="mark">বই</span><span class="brand">বাংলা বই</span><span id="device">CLOUD 240</span></header>
+<nav id="nav" aria-label="Main menu"><button id="homeTab" class="active" type="button">হোম</button><button id="booksTab" type="button">বই পড়ুন</button><button id="searchTab" type="button">খুঁজুন</button></nav>
+<section id="home">
+<p class="welcome">আপনার বাংলা বইঘর 📚</p>
+<p class="sub">ছোট স্ক্রিনে বাংলা বই পড়ার সহজ শর্টকাট। বইয়ের তালিকা ও পড়ার পৃষ্ঠা সরাসরি eBanglaLibrary থেকে লোড হবে।</p>
+<button class="tile primary" id="start" type="button">📖 বই পড়া শুরু করুন<span>সব বইয়ের তালিকা খুলুন</span></button>
+<button class="tile" id="latest" type="button">✨ নতুন বই<span>নতুন সংযোজিত বই দেখুন</span></button>
+<button class="tile" id="authors" type="button">✍️ লেখক ও বই<span>লাইব্রেরির মূল পাতা খুলুন</span></button>
+<button class="tile" id="openSite" type="button">🌐 মূল ওয়েবসাইট<span>eBanglaLibrary.com</span></button>
+<p class="sub">টিপস: ফোনের OK/Enter দিয়ে নির্বাচন, তীরচিহ্ন দিয়ে ফোকাস বদলান। পড়ার সময় পেজের ভেতরেই স্ক্রল করুন।</p>
+</section>
+<section id="searchpanel">
+<form id="searchForm"><label for="query">বই বা লেখকের নাম লিখুন</label><input id="query" type="text" maxlength="120" placeholder="যেমন: রবীন্দ্রনাথ" autocomplete="off"><div class="searchrow"><button type="submit">সার্চ</button><button id="cancelSearch" type="button">বন্ধ</button></div></form>
+</section>
+<section id="reader" aria-label="eBanglaLibrary reader"><iframe id="site" title="eBanglaLibrary online books" loading="eager" referrerpolicy="strict-origin-when-cross-origin" allow="fullscreen"></iframe></section>
+<div id="notice" role="status">যদি বই এখানে না খোলে, সাইটটি এমবেড ব্লক করতে পারে। নিচের বাটন দিয়ে একই পৃষ্ঠাটি সরাসরি খুলুন।<button id="fallback" type="button">সরাসরি ওয়েবসাইট খুলুন</button></div>
+<footer id="tools" hidden><button id="back" type="button">◀ পেছনে</button><button id="reload" type="button">↻ রিলোড</button><button id="direct" type="button">↗ সরাসরি</button><button id="homeBtn" type="button">⌂ হোম</button></footer>
+<footer id="foot"><span>* মেনু</span><span>OK নির্বাচন</span><button id="backKey" type="button">Back</button></footer>
+</main>
+<script>
+(function(){
+'use strict';
+const $=id=>document.getElementById(id),home=$('home'),panel=$('searchpanel'),reader=$('reader'),frame=$('site'),notice=$('notice'),tools=$('tools');
+const BASE='https://www.ebanglalibrary.com/',BOOKS=BASE+'books/';
+let current=BOOKS,historyStack=[],focusIndex=0,active='home';
+function direct(url){location.href=url;}
+function load(url,push=true){if(push&&current&&current!==url)historyStack.push(current);current=url;home.style.display='none';panel.style.display='none';reader.style.display='flex';tools.hidden=false;notice.style.display='block';frame.src=url;active='reader';$('homeTab').classList.remove('active');$('booksTab').classList.add('active');$('searchTab').classList.remove('active');updateFocus();}
+function showHome(){frame.src='about:blank';home.style.display='block';panel.style.display='none';reader.style.display='none';tools.hidden=true;notice.style.display='none';active='home';$('homeTab').classList.add('active');$('booksTab').classList.remove('active');$('searchTab').classList.remove('active');focusIndex=0;updateFocus();}
+function showSearch(){home.style.display='none';reader.style.display='none';tools.hidden=true;panel.style.display='block';notice.style.display='none';active='search';$('homeTab').classList.remove('active');$('booksTab').classList.remove('active');$('searchTab').classList.add('active');$('query').focus({preventScroll:true});updateFocus();}
+function search(q){q=String(q||'').trim();if(!q){$('query').focus();return;}load(BASE+'?s='+encodeURIComponent(q));}
+function focusables(){const scope=active==='reader'?tools:(active==='search'?panel:home);return Array.from(scope.querySelectorAll('button,input')).filter(el=>!el.disabled&&el.offsetParent!==null);}
+function updateFocus(){const a=focusables();if(!a.length)return;focusIndex=(focusIndex+a.length)%a.length;a.forEach((el,i)=>{el.style.outline=i===focusIndex?'2px solid #f0dfb1':'';el.style.outlineOffset=i===focusIndex?'-2px':'';});}
+$('start').addEventListener('click',()=>load(BOOKS));$('latest').addEventListener('click',()=>load(BASE));$('authors').addEventListener('click',()=>load(BASE+'library/'));$('openSite').addEventListener('click',()=>direct(BASE));
+$('homeTab').addEventListener('click',showHome);$('booksTab').addEventListener('click',()=>load(BOOKS));$('searchTab').addEventListener('click',showSearch);$('searchForm').addEventListener('submit',e=>{e.preventDefault();search($('query').value);});$('cancelSearch').addEventListener('click',showHome);
+$('back').addEventListener('click',()=>{const prev=historyStack.pop();if(prev)load(prev,false);else showHome();});$('reload').addEventListener('click',()=>{try{frame.contentWindow.location.reload();}catch(e){frame.src=current;}});$('direct').addEventListener('click',()=>direct(current));$('fallback').addEventListener('click',()=>direct(current));$('homeBtn').addEventListener('click',showHome);$('backKey').addEventListener('click',()=>active==='reader'?showHome():showHome());
+window.addEventListener('keydown',e=>{const el=document.activeElement,typing=el&&(el.tagName==='INPUT'||el.tagName==='TEXTAREA');if(typing&&e.key==='Enter'){e.preventDefault();if(el.id==='query')search(el.value);return;}if(typing)return;if(['ArrowDown','ArrowRight'].includes(e.key)){e.preventDefault();focusIndex++;updateFocus();return;}if(['ArrowUp','ArrowLeft'].includes(e.key)){e.preventDefault();focusIndex--;updateFocus();return;}if(e.key==='Enter'||e.key===' '){e.preventDefault();const a=focusables();if(a[focusIndex])a[focusIndex].click();return;}if(['Escape','Backspace','SoftRight','F2'].includes(e.key)){e.preventDefault();showHome();return;}if(e.key==='1'){showHome();return;}if(e.key==='2'){load(BOOKS);return;}if(e.key==='3'){showSearch();return;}if(['SoftLeft','F1'].includes(e.key)){showHome();}});
+let tx=-100,ty=-100,px=-100,py=-100,raf=0,idle;
+document.addEventListener('mousemove',e=>{tx=e.clientX;ty=e.clientY;$('cursor').style.opacity='1';if(!raf)raf=requestAnimationFrame(moveCursor);clearTimeout(idle);idle=setTimeout(()=>{$('cursor').style.opacity='0';},2200);},{passive:true});
+function moveCursor(){px+=(tx-px)*.5;py+=(ty-py)*.5;$('cursor').style.transform='translate3d('+Math.round(px-6)+'px,'+Math.round(py-6)+'px,0)';if(Math.abs(tx-px)>.4||Math.abs(ty-py)>.4)raf=requestAnimationFrame(moveCursor);else raf=0;}
+document.addEventListener('mousedown',()=>{$('cursor').style.background='rgba(40,118,83,.4)';},{passive:true});document.addEventListener('mouseup',()=>{$('cursor').style.background='transparent';},{passive:true});
+showHome();
+})();
+</script>
+</body>
+</html>
