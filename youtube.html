@@ -122,7 +122,7 @@ a{color:#8ab4f8}
  let focusIndex=0;
  let cursorFrame=0, targetX=-100, targetY=-100, pointerX=-100, pointerY=-100, mouseSeen=false, idleTimer=0;
  const OPEN_YOUTUBE='https://m.youtube.com/';
- const visibleFocusables=()=>Array.from(main.querySelectorAll('button:not([disabled]),input:not([disabled]),summary.btn,.result')).filter(el=>el.offsetParent!==null);
+ const visibleFocusables=()=>{const inPlayer=app.classList.contains('player-open');const scope=inPlayer?playerTools:main;const selector=inPlayer?'button:not([disabled])':'button:not([disabled]),input:not([disabled]),summary.btn,.result';return Array.from(scope.querySelectorAll(selector)).filter(el=>el.offsetParent!==null);};
  function setStatus(t){status.textContent=t;}
  function findVideoId(input){
    const s=String(input||'').trim();
@@ -209,7 +209,7 @@ a{color:#8ab4f8}
    if(apiKey)localStorage.setItem('yt240:apiKey',apiKey);else localStorage.removeItem('yt240:apiKey');
    setStatus(apiKey?'API key saved only on this device. In-app search is enabled.':'API key cleared. Search will open YouTube directly.');
  });
- document.getElementById('keyhelp').addEventListener('click',()=>setStatus('Keys: Up/Down move • Left/Right scroll focus groups • Enter/OK select • 1 Search • 2 Watch link • Back/Esc returns. A mouse cursor is shown when the browser supports a fine pointer.'));
+ document.getElementById('keyhelp').addEventListener('click',()=>setStatus('Keys: arrows move through controls • Enter/OK select • 1 Search • 2 Watch link • Back/Esc returns from the player. A mouse cursor is shown when supported.'));
  document.getElementById('back-home').addEventListener('click',home);
  document.getElementById('open-on-youtube').addEventListener('click',()=>{if(currentVideo)window.location.href='https://m.youtube.com/watch?v='+encodeURIComponent(currentVideo);});
  document.getElementById('left-key').addEventListener('click',()=>{setStatus('Menu: Search YouTube or paste a video link. Use arrow keys, Enter/OK, or your mouse pointer.');});
@@ -228,9 +228,8 @@ a{color:#8ab4f8}
    if(typing&&e.key==='Enter'&&active===videoInput){e.preventDefault();watch(videoInput.value);return;}
    // Preserve normal text editing (especially Backspace and caret arrows) while typing.
    if(typing)return;
-   if(e.key==='ArrowDown'||e.key==='ArrowUp'){
-     if(typing&&!['ArrowUp','ArrowDown'].includes(e.key))return;
-     e.preventDefault();focusIndex+=(e.key==='ArrowDown'?1:-1);updateFocus();return;
+   if(['ArrowDown','ArrowUp','ArrowLeft','ArrowRight'].includes(e.key)){
+     e.preventDefault();focusIndex+=(['ArrowDown','ArrowRight'].includes(e.key)?1:-1);updateFocus();return;
    }
    if(e.key==='Enter'&&!typing){const a=visibleFocusables();if(a[focusIndex]){e.preventDefault();a[focusIndex].click();}return;}
    if(['Escape','Backspace','SoftRight','F2'].includes(e.key)){if(app.classList.contains('player-open')){e.preventDefault();home();}return;}
