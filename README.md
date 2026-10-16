@@ -41,3 +41,29 @@ The `?a11y=1` query asks Telegram Web K to enable its keyboard/screen-reader acc
 - GitHub Pages is static HTTPS hosting. It does not run a server or hide credentials that a browser client must use.
 - The workflow tracks the upstream default branch at build time. If upstream changes its package requirements or source layout, the build may need an update.
 - This project has not yet been validated on the physical itel Neo R60+; the 240×320 layout is an adaptation target, not a guarantee that every advanced Telegram feature will work on the device.
+
+
+## YouTube Cloud 240
+
+Open the real YouTube mini-app at:
+
+`https://nrjsowefterbd.github.io/tg-cloud240/youtube.html`
+
+Features:
+- Responsive 240×320 screen layout.
+- Real YouTube video playback through YouTube's supported embedded player.
+- Real YouTube search in the browser without an API key.
+- Optional in-app search using the YouTube Data API v3.
+- Smooth mouse pointer on devices that report a fine pointer, plus keypad arrow/OK navigation.
+- No sample or fake search results.
+
+### Enable in-app YouTube search (optional)
+
+1. In Google Cloud Console, create/select a project and enable **YouTube Data API v3**.
+2. Create an API key and restrict it to **YouTube Data API v3** and the HTTP referrer `https://nrjsowefterbd.github.io/*`.
+3. Open the YouTube app, expand **Optional in-app search setup**, enter your key, and save it on that device.
+4. Run a search. The app requests real video results from `youtube.googleapis.com` and allows selecting a result for embedded playback.
+
+The API key is stored in that device's browser storage and is visible to the browser, so referrer and API restrictions are important. Keep the key out of public source files. YouTube API quotas and terms apply. If no key is saved, the app opens real YouTube mobile search instead.
+
+YouTube's embedded player has platform and video-specific restrictions. If an uploader disables embedding or the feature-phone browser cannot play a video, select **Open on YouTube** or use the normal YouTube website. This page is an unofficial launcher/client and is not endorsed by YouTube.
