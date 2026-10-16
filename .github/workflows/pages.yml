@@ -99,6 +99,11 @@ jobs:
           cp index.html deployment-dist/index.html
           touch deployment-dist/.nojekyll
 
+      - name: Add YouTube Cloud 240 page
+        run: |
+          cp youtube.html deployment-dist/youtube.html
+          touch deployment-dist/.nojekyll
+
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
         with:
