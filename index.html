@@ -28,7 +28,7 @@
     <section id="main">
       <p class="title">Telegram for CloudPhone</p>
       <p>Small-screen launcher for your 240×320 feature phone.</p>
-      <div id="status">The real Telegram web client opens in a separate page. This launcher does not collect your login details.</div>
+      <div id="status">This launcher navigates to the official Telegram website. It never asks for your login code or password.</div>
       <button class="btn" id="open" autofocus>▶ Open real Telegram Web K</button>
       <button class="btn" id="compact">Open Telegram Web Z</button>
       <button class="btn" id="help">Keypad help</button>
@@ -41,7 +41,7 @@
  const items=Array.from(document.querySelectorAll('#main button'));
  let index=0;
  function focus(){index=(index+items.length)%items.length;items.forEach((b,i)=>b.classList.toggle('selected',i===index));items[index].focus({preventScroll:true});}
- function openUrl(url){window.open(url,'_blank','noopener');}
+ function openUrl(url){window.location.href=url;}
  items[0].onclick=()=>openUrl('https://web.telegram.org/k/');
  items[1].onclick=()=>openUrl('https://web.telegram.org/a/');
  items[2].onclick=()=>document.getElementById('status').textContent='Use Up/Down to select; Enter or OK to open; 1 opens Web K; 2 opens Web Z. Login takes place on official Telegram.';
