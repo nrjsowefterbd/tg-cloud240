@@ -22,8 +22,82 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Check out repository
+      - name: Check out TG Cloud 240
         uses: actions/checkout@v6
+
+      - name: Choose real client or safe launcher
+        id: target
+        shell: bash
+        env:
+          TELEGRAM_API_ID: ${{ secrets.TELEGRAM_API_ID }}
+          TELEGRAM_API_HASH: ${{ secrets.TELEGRAM_API_HASH }}
+        run: |
+          if [[ -n "$TELEGRAM_API_ID" && -n "$TELEGRAM_API_HASH" ]]; then
+            echo "real_client=true" >> "$GITHUB_OUTPUT"
+            echo "Both Telegram API app values found; will build the real Telegram Web K client."
+          else
+            echo "real_client=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::Telegram API app values are not configured. Publishing the safe launcher for now."
+          fi
+
+      - name: Set up Node.js
+        if: steps.target.outputs.real_client == 'true'
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+
+      - name: Set up pnpm
+        if: steps.target.outputs.real_client == 'true'
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.16.0
+
+      - name: Check out upstream Telegram Web K
+        if: steps.target.outputs.real_client == 'true'
+        uses: actions/checkout@v6
+        with:
+          repository: TelegramOrg/Telegram-web-k
+          path: upstream
+
+      - name: Add TeleLite theme and Telegram API build configuration
+        if: steps.target.outputs.real_client == 'true'
+        shell: bash
+        env:
+          TELEGRAM_API_ID: ${{ secrets.TELEGRAM_API_ID }}
+          TELEGRAM_API_HASH: ${{ secrets.TELEGRAM_API_HASH }}
+        run: |
+          mkdir -p upstream/cloudphone
+          cp -R cloudphone/. upstream/cloudphone/
+          printf 'VITE_API_ID=%s\nVITE_API_HASH=%s\n' "$TELEGRAM_API_ID" "$TELEGRAM_API_HASH" > upstream/.env.local
+
+      - name: Apply feature-phone theme to Telegram Web K
+        if: steps.target.outputs.real_client == 'true'
+        working-directory: upstream
+        run: node cloudphone/apply-overlay.mjs
+
+      - name: Install real-client dependencies
+        if: steps.target.outputs.real_client == 'true'
+        working-directory: upstream
+        run: pnpm install --frozen-lockfile
+
+      - name: Build real Telegram Web K
+        if: steps.target.outputs.real_client == 'true'
+        working-directory: upstream
+        run: pnpm build
+
+      - name: Prepare real-client site
+        if: steps.target.outputs.real_client == 'true'
+        run: |
+          mkdir -p deployment-dist
+          cp -R upstream/dist/. deployment-dist/
+          touch deployment-dist/.nojekyll
+
+      - name: Prepare working launcher if API configuration is missing
+        if: steps.target.outputs.real_client != 'true'
+        run: |
+          mkdir -p deployment-dist
+          cp index.html deployment-dist/index.html
+          touch deployment-dist/.nojekyll
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
@@ -33,7 +107,7 @@ jobs:
       - name: Upload website
         uses: actions/upload-pages-artifact@v4
         with:
-          path: .
+          path: deployment-dist
 
       - name: Publish website
         id: deployment
