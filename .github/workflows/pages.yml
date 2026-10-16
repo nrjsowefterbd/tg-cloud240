@@ -99,9 +99,12 @@ jobs:
           cp index.html deployment-dist/index.html
           touch deployment-dist/.nojekyll
 
-      - name: Add YouTube Cloud 240 page
+      - name: Add CloudPhone mini-apps
         run: |
           cp youtube.html deployment-dist/youtube.html
+          cp ebook.html deployment-dist/ebook.html
+          cp naim.html deployment-dist/naim.html
+          cp browser.html deployment-dist/browser.html
           touch deployment-dist/.nojekyll
 
       - name: Configure GitHub Pages
