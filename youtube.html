@@ -4,256 +4,91 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#0f0f0f">
-<meta name="color-scheme" content="dark">
-<title>YouTube Cloud 240</title>
+<title>YouTube Mini — Cloud 240</title>
 <style>
-:root{color-scheme:dark;--bg:#0f0f0f;--panel:#181818;--row:#242424;--focus:#3b3b3b;--red:#ff0033;--text:#f1f1f1;--muted:#aaa;--line:#383838}
-*{box-sizing:border-box}
-html,body{margin:0;width:100%;height:100%;min-width:200px;background:#050505;color:var(--text);font:13px/1.3 Arial,Helvetica,sans-serif;overflow:hidden}
-body{display:flex;align-items:center;justify-content:center}
-button,input{font:inherit}
-button{cursor:pointer;touch-action:manipulation}
+:root{color-scheme:dark;--bg:#0f0f0f;--panel:#191919;--row:#252525;--red:#ff0033;--text:#f1f1f1;--muted:#aaa;--line:#393939}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;min-width:200px;background:#050505;color:var(--text);font:13px/1.3 Arial,Helvetica,sans-serif;overflow:hidden}body{display:flex;align-items:center;justify-content:center}button,input{font:inherit}button{cursor:pointer;touch-action:manipulation}
 #app{width:240px;height:320px;max-width:100vw;max-height:100dvh;background:var(--bg);display:flex;flex-direction:column;overflow:hidden;position:relative;border:1px solid #292929}
-#top{height:29px;flex:none;background:var(--panel);display:flex;align-items:center;gap:6px;padding:0 7px;border-bottom:1px solid var(--line)}
-.brand{font-weight:800;letter-spacing:-.5px;font-size:13px;white-space:nowrap}
-.yt-icon{width:19px;height:14px;border-radius:4px;background:var(--red);display:inline-flex;align-items:center;justify-content:center;color:white;font-size:9px;flex:none}
-#top-right{margin-left:auto;font-size:9px;color:var(--muted);white-space:nowrap}
-#main{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;padding:7px}
-#main::-webkit-scrollbar{width:3px}#main::-webkit-scrollbar-thumb{background:#555}
-.heading{font-size:15px;font-weight:bold;margin:2px 0 5px}
-.sub{font-size:10px;color:var(--muted);margin:0 0 8px}
-label{display:block;font-size:10px;color:#ddd;margin:7px 0 3px}
-input{display:block;width:100%;min-width:0;max-width:100%;background:#101010;color:white;border:1px solid #505050;border-radius:4px;padding:8px 7px;outline:none;font-size:12px}
-input::placeholder{color:#a4a4a4}
-input:focus{border-color:#eee;box-shadow:0 0 0 1px #eee}
-.btn{display:flex;align-items:center;gap:6px;width:100%;min-height:34px;padding:7px 8px;margin:5px 0;background:var(--row);color:var(--text);border:1px solid #3a3a3a;border-radius:4px;text-align:left;font-weight:600;font-size:11px}
-.btn.primary{background:#cc0029;border-color:#cc0029}
-.btn:focus-visible,.btn.selected,.btn:hover{outline:2px solid #fff;outline-offset:-2px;background:var(--focus)}
-.btn.primary:focus-visible,.btn.primary:hover,.btn.primary.selected{background:#a90024}
-.row{display:flex;gap:5px;align-items:center}
-.row>*{min-width:0;flex:1}
-.row .btn{justify-content:center}
-#status{font-size:10px;line-height:1.35;color:#ddd;background:#202020;border:1px solid #383838;border-radius:4px;padding:6px;margin:7px 0;overflow-wrap:anywhere}
-#results{display:flex;flex-direction:column;gap:6px;margin-top:8px}
-.result{display:grid;grid-template-columns:90px 1fr;gap:7px;align-items:center;padding:5px;background:#1d1d1d;border:1px solid #333;border-radius:4px;width:100%;color:white;text-align:left}
-.result img{width:90px;height:54px;object-fit:cover;background:#333;border-radius:3px}
-.rtitle{font-size:11px;font-weight:bold;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere}
-.rmeta{font-size:9px;color:#b6b6b6;margin-top:3px;overflow-wrap:anywhere}
-#player-view{display:none;flex:1;min-height:0;position:relative;background:#000}
-#player-frame{display:block;width:100%;height:100%;min-height:200px;border:0;background:#000}
-#player-tools{height:27px;flex:none;background:#181818;display:flex;align-items:center;justify-content:space-between;padding:0 4px;border-top:1px solid #444;gap:4px}
-#player-tools[hidden]{display:none}
-#player-tools button{background:#292929;border:1px solid #555;color:white;border-radius:3px;padding:4px 6px;font-size:10px}
-#keys{height:23px;flex:none;background:#080808;border-top:1px solid #333;display:flex;align-items:center;justify-content:space-between;padding:0 5px}
-#keys button{background:transparent;color:#eee;border:0;font-size:9px;padding:4px}
-#keys button:focus-visible{outline:1px solid white}
-#cursor{position:fixed;left:0;top:0;width:13px;height:13px;border:2px solid #fff;border-radius:50%;box-shadow:0 0 0 2px #ff0033,0 1px 5px #000;pointer-events:none;z-index:99999;opacity:0;transform:translate3d(-100px,-100px,0);will-change:transform}
-#cursor.down{background:rgba(255,0,51,.35);transform:translate3d(-100px,-100px,0) scale(.8)}
-#app.player-open #top,#app.player-open #keys{display:none}
-#app.player-open #main{display:none}
-#app.player-open #player-view{display:flex}
-#app.player-open #player-tools{height:26px}
-.smallprint{font-size:9px;color:#9c9c9c;line-height:1.35;margin:8px 1px}
-hr{border:0;border-top:1px solid #333;margin:9px 0}
-a{color:#8ab4f8}
-@media(max-height:340px){#app{height:100dvh;border:0}#top{height:25px}#keys{height:21px}#main{padding:5px}}
-@media(hover:hover) and (pointer:fine){#cursor{opacity:1}}
-@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+#top{height:29px;flex:none;background:var(--panel);display:flex;align-items:center;gap:6px;padding:0 7px;border-bottom:1px solid var(--line)}.yt-icon{width:19px;height:14px;border-radius:4px;background:var(--red);display:inline-flex;align-items:center;justify-content:center;color:white;font-size:9px;flex:none}.brand{font-weight:800;letter-spacing:-.5px;font-size:13px;white-space:nowrap}#top-right{margin-left:auto;font-size:9px;color:var(--muted)}
+#nav{display:flex;gap:4px;padding:5px 6px;background:#111;border-bottom:1px solid #333;flex:none}#nav button{flex:1;min-width:0;padding:6px 2px;font-size:10px;font-weight:bold;background:#292929;color:#eee;border:1px solid #444;border-radius:4px}#nav button.active{background:#c9002b;border-color:#e21b42}
+#main{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;padding:6px}#main::-webkit-scrollbar{width:3px}#main::-webkit-scrollbar-thumb{background:#555}
+.heading{font-size:14px;font-weight:bold;margin:2px 0 4px}.sub{font-size:10px;color:var(--muted);margin:0 0 7px}label{display:block;font-size:10px;color:#ddd;margin:6px 0 3px}input{display:block;width:100%;min-width:0;max-width:100%;background:#101010;color:white;border:1px solid #505050;border-radius:4px;padding:8px 7px;outline:none;font-size:12px}input::placeholder{color:#a4a4a4}input:focus{border-color:#eee;box-shadow:0 0 0 1px #eee}
+.btn{display:flex;align-items:center;justify-content:center;gap:5px;width:100%;min-height:30px;padding:6px;margin:4px 0;background:var(--row);color:var(--text);border:1px solid #444;border-radius:4px;text-align:center;font-weight:600;font-size:11px}.btn.primary{background:#c9002b;border-color:#c9002b}.btn:focus-visible,.btn.selected,.btn:hover{outline:2px solid #fff;outline-offset:-2px;background:#454545}.btn.primary:focus-visible,.btn.primary:hover,.btn.primary.selected{background:#a90024}.row{display:flex;gap:4px;align-items:center}.row>*{min-width:0;flex:1}
+#status{font-size:10px;line-height:1.35;color:#ddd;background:#202020;border:1px solid #383838;border-radius:4px;padding:6px;margin:6px 0;overflow-wrap:anywhere}
+#results{display:flex;flex-direction:column;gap:6px;margin-top:7px}.result{display:grid;grid-template-columns:88px 1fr;gap:6px;align-items:center;padding:4px;background:#1d1d1d;border:1px solid #333;border-radius:4px;width:100%;color:white;text-align:left}.result img{width:88px;height:53px;object-fit:cover;background:#333;border-radius:3px}.rtitle{font-size:10px;font-weight:bold;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere}.rmeta{font-size:9px;color:#b6b6b6;margin-top:3px;overflow-wrap:anywhere}
+#player-view{display:none;flex:1;min-height:0;position:relative;background:#000}#player-frame{display:block;width:100%;height:100%;min-height:200px;border:0;background:#000}#player-tools{height:28px;flex:none;background:#181818;display:flex;align-items:center;justify-content:space-between;padding:0 4px;border-top:1px solid #444;gap:4px}#player-tools[hidden]{display:none}#player-tools button{background:#292929;border:1px solid #555;color:white;border-radius:3px;padding:5px 6px;font-size:10px}
+#keys{height:23px;flex:none;background:#080808;border-top:1px solid #333;display:flex;align-items:center;justify-content:space-between;padding:0 5px}#keys button{background:transparent;color:#eee;border:0;font-size:9px;padding:4px}#keys button:focus-visible{outline:1px solid white}
+#cursor{position:fixed;left:0;top:0;width:13px;height:13px;border:2px solid #fff;border-radius:50%;box-shadow:0 0 0 2px #ff0033,0 1px 5px #000;pointer-events:none;z-index:99999;opacity:0;transform:translate3d(-100px,-100px,0);will-change:transform}#cursor.down{background:rgba(255,0,51,.35)}
+#app.player-open #top,#app.player-open #nav,#app.player-open #keys{display:none}#app.player-open #main{display:none}#app.player-open #player-view{display:flex}
+.smallprint{font-size:9px;color:#9c9c9c;line-height:1.35;margin:7px 1px}details summary{list-style:none;cursor:pointer}details summary::-webkit-details-marker{display:none}hr{border:0;border-top:1px solid #333;margin:8px 0}
+@media(max-height:340px){#app{height:100dvh;border:0}#top{height:25px}#keys{height:21px}#main{padding:5px}}@media(hover:hover) and (pointer:fine){#cursor{opacity:1}}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
 <div id="cursor" aria-hidden="true"></div>
 <main id="app">
-  <header id="top"><span class="yt-icon">▶</span><span class="brand">YouTube</span><span id="top-right">CLOUD 240</span></header>
-  <section id="main">
-    <p class="heading">Watch on your phone</p>
-    <p class="sub">Lightweight controls for a 240×320 screen.</p>
-    <form id="search-form">
-      <label for="query">Search YouTube</label>
-      <input id="query" name="q" type="search" maxlength="180" placeholder="Music, news, tutorials…" autocomplete="off">
-      <div class="row">
-        <button class="btn primary" type="submit">⌕ Search</button>
-        <button class="btn" id="site-search" type="button">Open YouTube</button>
-      </div>
-    </form>
-    <div id="status" role="status">Search opens real YouTube results. For playback inside this app, paste a YouTube video link or ID below.</div>
-    <form id="watch-form">
-      <label for="video-url">Play a video here</label>
-      <input id="video-url" type="text" maxlength="300" placeholder="Paste YouTube link or video ID">
-      <button class="btn primary" type="submit">▶ Watch video</button>
-    </form>
-    <div id="results" aria-live="polite"></div>
-    <details id="search-settings">
-      <summary class="btn">⚙ Optional in-app search setup</summary>
-      <p class="smallprint">To show real results inside this app, add your own YouTube Data API v3 key. Restrict the key to this site's HTTP referrer and the YouTube Data API in Google Cloud. Without a key, Search opens real YouTube results in the browser.</p>
-      <input id="api-key" type="text" maxlength="250" placeholder="YouTube Data API key" autocomplete="off" spellcheck="false">
-      <button class="btn" id="save-api-key" type="button">Save key on this device</button>
-    </details>
-    <hr>
-    <button class="btn" id="recent" type="button">↻ Repeat last search</button>
-    <button class="btn" id="keyhelp" type="button">⌨ Key / pointer help</button>
-    <p class="smallprint">Real YouTube search and playback. No fake video list. Some videos may restrict embedding; use “Open on YouTube” when that happens.</p>
-  </section>
-  <section id="player-view" aria-label="YouTube player">
-    <iframe id="player-frame" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-  </section>
-  <footer id="player-tools" hidden>
-    <button id="back-home" type="button">← Menu</button>
-    <button id="open-on-youtube" type="button">Open on YouTube ↗</button>
-  </footer>
-  <footer id="keys"><button id="left-key" type="button">* Menu</button><button id="ok-key" type="button">OK / Select</button><button id="back-key" type="button">Back</button></footer>
+<header id="top"><span class="yt-icon">▶</span><span class="brand">YouTube Mini</span><span id="top-right">CLOUD 240</span></header>
+<nav id="nav" aria-label="Main menu"><button id="trending-tab" class="active" type="button">Trending</button><button id="search-tab" type="button">Search</button><button id="settings-tab" type="button">Key Setup</button></nav>
+<section id="main">
+<div id="home-view">
+<p class="heading">Popular in Bangladesh</p><p class="sub">Daily popular videos • choose a video to open it on YouTube.</p>
+<button class="btn primary" id="load-trending" type="button">↻ Load today's popular</button>
+<div id="status" role="status" aria-live="polite">Add your YouTube API key under Key Setup to load live popular videos. Search and Open YouTube work without a key.</div>
+<div id="results" aria-live="polite"></div>
+<button class="btn" id="more" type="button" hidden>Load more</button>
+</div>
+<div id="search-view" hidden>
+<p class="heading">Search YouTube</p><p class="sub">Enter a word or phrase.</p>
+<form id="search-form"><label for="query">Search words</label><input id="query" maxlength="180" type="text" placeholder="Music, news, football..." autocomplete="off"><div class="row"><button class="btn primary" type="submit">⌕ Search</button><button class="btn" id="site-search" type="button">Open YouTube</button></div></form>
+<p class="smallprint">With an API key, results appear here. Without a key, Search opens the real YouTube mobile website.</p>
+</div>
+<div id="settings-view" hidden>
+<p class="heading">API key setup</p><p class="sub">Needed for live Trending and in-app search.</p>
+<label for="api-key">YouTube Data API v3 key</label><input id="api-key" type="text" maxlength="250" placeholder="Paste your API key" autocomplete="off" spellcheck="false">
+<button class="btn primary" id="save-api-key" type="button">Save key on this device</button><button class="btn" id="clear-api-key" type="button">Clear saved key</button>
+<p class="smallprint">Create a key in Google Cloud Console and enable YouTube Data API v3. Restrict the key to YouTube Data API v3 and your GitHub Pages website referrer if compatible with your phone browser. A key used in a browser is visible to users; never use a private server key. Quotas apply.</p>
+<button class="btn" id="open-console" type="button">Open Google Cloud Console</button>
+</div>
+</section>
+<section id="player-view" aria-label="YouTube player"><iframe id="player-frame" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></section>
+<footer id="player-tools" hidden><button id="back-home" type="button">← Menu</button><button id="open-on-youtube" type="button">Open on YouTube ↗</button></footer>
+<footer id="keys"><button id="left-key" type="button">* Menu</button><button id="ok-key" type="button">OK / Select</button><button id="back-key" type="button">Back</button></footer>
 </main>
 <script>
 (function(){
- 'use strict';
- const app=document.getElementById('app');
- const main=document.getElementById('main');
- const searchInput=document.getElementById('query');
- const videoInput=document.getElementById('video-url');
- const status=document.getElementById('status');
- const results=document.getElementById('results');
- const apiKeyInput=document.getElementById('api-key');
- let apiKey=localStorage.getItem('yt240:apiKey')||'';
- const frame=document.getElementById('player-frame');
- const playerTools=document.getElementById('player-tools');
- const cursor=document.getElementById('cursor');
- let lastSearch=localStorage.getItem('yt240:lastSearch')||'';
- let currentVideo='';
- let focusIndex=0;
- let cursorFrame=0, targetX=-100, targetY=-100, pointerX=-100, pointerY=-100, mouseSeen=false, idleTimer=0;
- const OPEN_YOUTUBE='https://m.youtube.com/';
- const visibleFocusables=()=>{const inPlayer=app.classList.contains('player-open');const scope=inPlayer?playerTools:main;const selector=inPlayer?'button:not([disabled])':'button:not([disabled]),input:not([disabled]),summary.btn,.result';return Array.from(scope.querySelectorAll(selector)).filter(el=>el.offsetParent!==null);};
- function setStatus(t){status.textContent=t;}
- function findVideoId(input){
-   const s=String(input||'').trim();
-   if(/^[A-Za-z0-9_-]{11}$/.test(s)) return s;
-   try{
-     const u=new URL(/^https?:\/\//i.test(s)?s:'https://'+s);
-     const host=u.hostname.toLowerCase().replace(/^www\./,'').replace(/^m\./,'');
-     if(host==='youtu.be') return u.pathname.split('/').filter(Boolean)[0]||'';
-     if(host==='youtube.com'||host==='youtube-nocookie.com'){
-       if(u.pathname==='/watch') return u.searchParams.get('v')||'';
-       const parts=u.pathname.split('/').filter(Boolean);
-       if(['embed','shorts','live','v'].includes(parts[0])) return parts[1]||'';
-     }
-   }catch(e){}
-   return '';
- }
- function youtubeSearchUrl(q){return 'https://m.youtube.com/results?search_query='+encodeURIComponent(q);}
- async function search(q){
-   q=String(q||'').trim();
-   if(!q){setStatus('Type a search first.');searchInput.focus();return;}
-   lastSearch=q; localStorage.setItem('yt240:lastSearch',q);
-   if(!apiKey){window.location.href=youtubeSearchUrl(q);return;}
-   setStatus('Searching YouTube…');results.replaceChildren();
-   try{
-     const url='https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=8&q='+encodeURIComponent(q)+'&key='+encodeURIComponent(apiKey);
-     const response=await fetch(url);
-     const data=await response.json();
-     if(!response.ok||data.error)throw new Error(data.error?.message||('HTTP '+response.status));
-     const videos=(data.items||[]).filter(v=>v.id&&v.id.videoId&&v.snippet);
-     if(!videos.length){setStatus('No videos found. Try another search.');return;}
-     videos.forEach(video=>{
-       const card=document.createElement('button');
-       card.type='button';card.className='result focusable';card.dataset.id=video.id.videoId;
-       const image=document.createElement('img');image.alt='';image.loading='lazy';
-       image.src=video.snippet.thumbnails?.medium?.url||video.snippet.thumbnails?.default?.url||'';
-       const info=document.createElement('span');
-       const title=document.createElement('span');title.className='rtitle';title.textContent=video.snippet.title||'YouTube video';
-       const meta=document.createElement('span');meta.className='rmeta';meta.textContent=video.snippet.channelTitle||'YouTube';
-       info.append(title,meta);card.append(image,info);
-       card.addEventListener('click',()=>watch(video.id.videoId));
-       results.append(card);
-     });
-     setStatus('Real YouTube results. Select a result to play it here.');
-     const focusables=visibleFocusables();
-     const firstResult=focusables.findIndex(el=>el.classList.contains('result'));
-     if(firstResult>=0)focusIndex=firstResult;
-     updateFocus();
-   }catch(err){
-     setStatus('In-app search failed: '+String(err.message||err).slice(0,150)+'. Check the API key/referrer restriction, or use Open YouTube.');
-   }
- }
- function searchExternal(q){
-   q=String(q||'').trim();
-   window.location.href=q?youtubeSearchUrl(q):OPEN_YOUTUBE;
- }
- function watch(input){
-   const id=findVideoId(input);
-   if(!id){setStatus('That does not look like a YouTube video link or 11-character video ID.');videoInput.focus();return;}
-   currentVideo=id;
-   app.classList.add('player-open');
-   cursor.style.opacity='0';
-   playerTools.hidden=false;
-   document.getElementById('player-tools').style.display='flex';
-   frame.src='https://www.youtube.com/embed/'+encodeURIComponent(id)+'?playsinline=1&controls=1&rel=0&enablejsapi=1&origin='+encodeURIComponent(location.origin);
-   try{history.pushState({youtubePlayer:true},'','#watch='+id);}catch(e){}
-   document.getElementById('back-home').focus({preventScroll:true});
- }
- function home(){
-   frame.src='about:blank';
-   app.classList.remove('player-open');
-   if(mouseSeen)cursor.style.opacity='1';
-   playerTools.hidden=true;
-   document.getElementById('player-tools').style.display='none';
-   try{history.replaceState(null,'',location.pathname+location.search);}catch(e){}
-   focusIndex=0;updateFocus();
- }
- document.getElementById('search-form').addEventListener('submit',e=>{e.preventDefault();search(searchInput.value);});
- document.getElementById('site-search').addEventListener('click',()=>searchExternal(searchInput.value));
- document.getElementById('watch-form').addEventListener('submit',e=>{e.preventDefault();watch(videoInput.value);});
- document.getElementById('recent').addEventListener('click',()=>{if(lastSearch){search(lastSearch)}else{setStatus('No previous search saved yet.');searchInput.focus();}});
- apiKeyInput.value=apiKey;
- document.getElementById('save-api-key').addEventListener('click',()=>{
-   apiKey=apiKeyInput.value.trim();
-   if(apiKey)localStorage.setItem('yt240:apiKey',apiKey);else localStorage.removeItem('yt240:apiKey');
-   setStatus(apiKey?'API key saved only on this device. In-app search is enabled.':'API key cleared. Search will open YouTube directly.');
- });
- document.getElementById('keyhelp').addEventListener('click',()=>setStatus('Keys: arrows move through controls • Enter/OK select • 1 Search • 2 Watch link • Back/Esc returns from the player. A mouse cursor is shown when supported.'));
- document.getElementById('back-home').addEventListener('click',home);
- document.getElementById('open-on-youtube').addEventListener('click',()=>{if(currentVideo)window.location.href='https://m.youtube.com/watch?v='+encodeURIComponent(currentVideo);});
- document.getElementById('left-key').addEventListener('click',()=>{setStatus('Menu: Search YouTube or paste a video link. Use arrow keys, Enter/OK, or your mouse pointer.');});
- document.getElementById('ok-key').addEventListener('click',()=>{const a=visibleFocusables();if(a[focusIndex])a[focusIndex].click();});
- document.getElementById('back-key').addEventListener('click',home);
- function updateFocus(){
-   const a=visibleFocusables(); if(!a.length)return;
-   focusIndex=(focusIndex+a.length)%a.length;
-   a.forEach((el,i)=>el.classList.toggle('selected',i===focusIndex));
-   if(a[focusIndex].classList.contains('result')) a[focusIndex].scrollIntoView({block:'nearest'});
- }
- window.addEventListener('keydown',e=>{
-   const active=document.activeElement;
-   const typing=active&&(active.tagName==='INPUT'||active.tagName==='TEXTAREA');
-   if(typing&&e.key==='Enter'&&active===searchInput){e.preventDefault();search(searchInput.value);return;}
-   if(typing&&e.key==='Enter'&&active===videoInput){e.preventDefault();watch(videoInput.value);return;}
-   // Preserve normal text editing (especially Backspace and caret arrows) while typing.
-   if(typing)return;
-   if(['ArrowDown','ArrowUp','ArrowLeft','ArrowRight'].includes(e.key)){
-     e.preventDefault();focusIndex+=(['ArrowDown','ArrowRight'].includes(e.key)?1:-1);updateFocus();return;
-   }
-   if(e.key==='Enter'&&!typing){const a=visibleFocusables();if(a[focusIndex]){e.preventDefault();a[focusIndex].click();}return;}
-   if(['Escape','Backspace','SoftRight','F2'].includes(e.key)){if(app.classList.contains('player-open')){e.preventDefault();home();}return;}
-   if(!typing&&e.key==='1'){e.preventDefault();searchInput.focus();return;}
-   if(!typing&&e.key==='2'){e.preventDefault();videoInput.focus();return;}
-   if(!typing&&['SoftLeft','F1'].includes(e.key)){e.preventDefault();document.getElementById('left-key').click();}
- });
- document.addEventListener('mousemove',e=>{
-   mouseSeen=true;targetX=e.clientX;targetY=e.clientY;cursor.style.opacity='1';
-   if(!cursorFrame)cursorFrame=requestAnimationFrame(animateCursor);
-   clearTimeout(idleTimer);idleTimer=setTimeout(()=>{if(!app.matches(':hover'))cursor.style.opacity='0';},2200);
- },{passive:true});
- function animateCursor(){
-   pointerX+=(targetX-pointerX)*0.48;pointerY+=(targetY-pointerY)*0.48;
-   cursor.style.transform='translate3d('+Math.round(pointerX-6)+'px,'+Math.round(pointerY-6)+'px,0)';
-   if(Math.abs(targetX-pointerX)>0.4||Math.abs(targetY-pointerY)>0.4){cursorFrame=requestAnimationFrame(animateCursor);}
-   else cursorFrame=0;
- }
- document.addEventListener('mousedown',()=>cursor.classList.add('down'),{passive:true});
- document.addEventListener('mouseup',()=>cursor.classList.remove('down'),{passive:true});
- // If opened from a shared URL containing #watch=VIDEO_ID, start playback directly.
- const match=location.hash.match(/^#watch=([A-Za-z0-9_-]{11})$/);if(match)watch(match[1]);
- if(lastSearch)searchInput.value=lastSearch;
- updateFocus();
+'use strict';
+const $=id=>document.getElementById(id), app=$('app'),main=$('main'),status=$('status'),results=$('results'),apiInput=$('api-key'),frame=$('player-frame'),cursor=$('cursor');
+const views={trending:$('home-view'),search:$('search-view'),settings:$('settings-view')};
+let apiKey='',currentVideo='',nextPageToken='',lastSearch='',focusIndex=0,activeTab='trending';
+try{apiKey=localStorage.getItem('ytmini:key')||'';lastSearch=localStorage.getItem('ytmini:last')||'';}catch(e){}
+apiInput.value=apiKey;
+function say(t){status.textContent=t;}
+function tab(name){activeTab=name;Object.keys(views).forEach(k=>views[k].hidden=k!==name);$('trending-tab').classList.toggle('active',name==='trending');$('search-tab').classList.toggle('active',name==='search');$('settings-tab').classList.toggle('active',name==='settings');focusIndex=0;updateFocus();if(name==='search')$('query').focus({preventScroll:true});}
+function videoId(value){const s=String(value||'').trim();if(/^[A-Za-z0-9_-]{11}$/.test(s))return s;try{const u=new URL(/^https?:\/\//i.test(s)?s:'https://'+s),host=u.hostname.toLowerCase().replace(/^www\./,'').replace(/^m\./,'');if(host==='youtu.be')return u.pathname.split('/').filter(Boolean)[0]||'';if(host==='youtube.com'||host==='youtube-nocookie.com'){if(u.pathname==='/watch')return u.searchParams.get('v')||'';const p=u.pathname.split('/').filter(Boolean);if(['embed','shorts','live','v'].includes(p[0]))return p[1]||'';}}catch(e){}return '';}
+function openYouTube(url){location.href=url;}
+function externalSearch(q){q=String(q||'').trim();if(!q){say('Type something to search first.');tab('search');return;}openYouTube('https://m.youtube.com/results?search_query='+encodeURIComponent(q));}
+function watch(id){id=videoId(id);if(!id){say('Invalid video ID or YouTube link.');return;}currentVideo=id;app.classList.add('player-open');$('player-tools').hidden=false;frame.src='https://www.youtube.com/embed/'+encodeURIComponent(id)+'?playsinline=1&controls=1&rel=0';$('back-home').focus({preventScroll:true});}
+function home(){frame.src='about:blank';app.classList.remove('player-open');$('player-tools').hidden=true;try{history.replaceState(null,'',location.pathname+location.search);}catch(e){}updateFocus();}
+function addVideos(items,clear){if(clear)results.replaceChildren();(items||[]).forEach(v=>{const id=typeof v.id==='string'?v.id:(v.id&&v.id.videoId);const sn=v.snippet;if(!id||!sn)return;const card=document.createElement('button');card.type='button';card.className='result';card.dataset.id=id;const img=document.createElement('img');img.alt='';img.loading='lazy';img.src=sn.thumbnails?.medium?.url||sn.thumbnails?.default?.url||'';const info=document.createElement('span'),title=document.createElement('span'),meta=document.createElement('span');title.className='rtitle';title.textContent=sn.title||'YouTube video';meta.className='rmeta';meta.textContent=sn.channelTitle||'YouTube';info.append(title,meta);card.append(img,info);card.addEventListener('click',()=>openYouTube('https://m.youtube.com/watch?v='+encodeURIComponent(id)));results.append(card);});updateFocus();}
+async function apiRequest(endpoint,params){if(!apiKey){say('Set your API key in Key Setup to load live results.');return null;}const url=new URL('https://www.googleapis.com/youtube/v3/'+endpoint);Object.entries(params).forEach(([k,v])=>url.searchParams.set(k,v));url.searchParams.set('key',apiKey);say('Loading YouTube…');try{const res=await fetch(url.toString());const data=await res.json();if(!res.ok||data.error)throw new Error(data.error?.message||('HTTP '+res.status));return data;}catch(e){say('Could not load results: '+String(e.message||e).slice(0,130)+'. Check key, API enablement, network and quota.');return null;}}
+async function trending(more){if(!apiKey){tab('settings');say('Paste your YouTube Data API v3 key, save it, then tap Trending.');return;}if(!more){nextPageToken='';results.replaceChildren();}const p={part:'snippet',chart:'mostPopular',regionCode:'BD',maxResults:'10'};if(more&&nextPageToken)p.pageToken=nextPageToken;const data=await apiRequest('videos',p);if(!data)return;nextPageToken=data.nextPageToken||'';addVideos(data.items, !more);$('more').hidden=!nextPageToken;say('Popular videos for Bangladesh. Select a result to open it on YouTube.');tab('trending');}
+async function search(q){q=String(q||'').trim();if(!q){say('Type a search first.');$('query').focus();return;}lastSearch=q;try{localStorage.setItem('ytmini:last',q);}catch(e){}if(!apiKey){externalSearch(q);return;}tab('search');results.replaceChildren();const data=await apiRequest('search',{part:'snippet',type:'video',maxResults:'10',q});if(!data)return;addVideos(data.items,true);say('Search results for: '+q);views.search.append(results);}
+function focusables(){const scope=app.classList.contains('player-open')?$('player-tools'):views[activeTab];return Array.from(scope.querySelectorAll('button:not([disabled]),input:not([disabled]),summary,.result')).filter(el=>!el.hidden&&el.offsetParent!==null);}
+function updateFocus(){const a=focusables();if(!a.length)return;focusIndex=(focusIndex+a.length)%a.length;a.forEach((el,i)=>el.classList.toggle('selected',i===focusIndex));if(a[focusIndex].classList.contains('result'))a[focusIndex].scrollIntoView({block:'nearest'});}
+$('trending-tab').addEventListener('click',()=>{tab('trending');});$('search-tab').addEventListener('click',()=>tab('search'));$('settings-tab').addEventListener('click',()=>tab('settings'));
+$('load-trending').addEventListener('click',()=>trending(false));$('more').addEventListener('click',()=>trending(true));
+$('search-form').addEventListener('submit',e=>{e.preventDefault();search($('query').value);});$('site-search').addEventListener('click',()=>externalSearch($('query').value));
+$('save-api-key').addEventListener('click',()=>{apiKey=apiInput.value.trim();try{if(apiKey)localStorage.setItem('ytmini:key',apiKey);else localStorage.removeItem('ytmini:key');}catch(e){}say(apiKey?'API key saved on this device. Open Trending to load popular videos.':'No key saved. Search will open YouTube directly.');});
+$('clear-api-key').addEventListener('click',()=>{apiKey='';apiInput.value='';try{localStorage.removeItem('ytmini:key');}catch(e){}say('Saved key cleared.');});
+$('open-console').addEventListener('click',()=>openYouTube('https://console.cloud.google.com/apis/library/youtube.googleapis.com'));
+$('back-home').addEventListener('click',home);$('open-on-youtube').addEventListener('click',()=>{if(currentVideo)openYouTube('https://m.youtube.com/watch?v='+encodeURIComponent(currentVideo));});
+$('left-key').addEventListener('click',()=>{tab(activeTab==='trending'?'search':'trending');});$('ok-key').addEventListener('click',()=>{const a=focusables();if(a[focusIndex])a[focusIndex].click();});$('back-key').addEventListener('click',home);
+window.addEventListener('keydown',e=>{const active=document.activeElement,typing=active&&(active.tagName==='INPUT'||active.tagName==='TEXTAREA');if(typing&&e.key==='Enter'){e.preventDefault();if(active.id==='query')search(active.value);else if(active.id==='api-key')$('save-api-key').click();return;}if(typing)return;if(['ArrowDown','ArrowRight'].includes(e.key)){e.preventDefault();focusIndex++;updateFocus();return;}if(['ArrowUp','ArrowLeft'].includes(e.key)){e.preventDefault();focusIndex--;updateFocus();return;}if(e.key==='Enter'){e.preventDefault();const a=focusables();if(a[focusIndex])a[focusIndex].click();return;}if(['Escape','Backspace','SoftRight','F2'].includes(e.key)){if(app.classList.contains('player-open')){e.preventDefault();home();}else{tab('trending');}return;}if(e.key==='1'){e.preventDefault();tab('search');return;}if(e.key==='2'){e.preventDefault();tab('settings');return;}if(['SoftLeft','F1'].includes(e.key)){e.preventDefault();$('left-key').click();}});
+let tx=-100,ty=-100,px=-100,py=-100,raf=0,seen=false,idle;
+document.addEventListener('mousemove',e=>{seen=true;tx=e.clientX;ty=e.clientY;cursor.style.opacity='1';if(!raf)raf=requestAnimationFrame(moveCursor);clearTimeout(idle);idle=setTimeout(()=>{if(!app.matches(':hover'))cursor.style.opacity='0';},2200);},{passive:true});
+function moveCursor(){px+=(tx-px)*.5;py+=(ty-py)*.5;cursor.style.transform='translate3d('+Math.round(px-6)+'px,'+Math.round(py-6)+'px,0)';if(Math.abs(tx-px)>.4||Math.abs(ty-py)>.4)raf=requestAnimationFrame(moveCursor);else raf=0;}
+document.addEventListener('mousedown',()=>cursor.classList.add('down'),{passive:true});document.addEventListener('mouseup',()=>cursor.classList.remove('down'),{passive:true});
+if(lastSearch)$('query').value=lastSearch;tab('trending');if(location.hash.startsWith('#watch=')){const id=videoId(location.hash.slice(7));if(id)watch(id);}updateFocus();
 })();
 </script>
 </body>
